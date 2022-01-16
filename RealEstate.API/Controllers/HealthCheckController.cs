@@ -11,6 +11,7 @@ namespace RealEstate.API.Controllers
     [ApiController]
     public class HealthCheckController : ControllerBase
     {
+        [HttpGet]
         public string Get()
         {
             return "Healthy";
