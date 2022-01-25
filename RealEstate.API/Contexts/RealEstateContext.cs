@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace RealEstate.API.Contexts
 {
-    public class RealEstateContext : DbContext
+    public class RealEstateContext : DbContext, IRealEstateContext
     {
         public RealEstateContext(DbContextOptions<RealEstateContext> options) : base(options)
         {
-            Database.EnsureCreated(); // remove if using migrations
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -21,14 +20,16 @@ namespace RealEstate.API.Contexts
             //builder.ApplyConfiguration(new ImageConfiguration());
             builder.ApplyConfiguration(new PropertyConfiguration());
             builder.ApplyConfiguration(new PropertyTypeConfiguration());
-            builder.ApplyConfiguration(new UserConfiguration());
-            builder.ApplyConfiguration(new UserTypeConfiguration());
         }
+
+        public async Task SaveChangesAsync()
+        {
+            await base.SaveChangesAsync();
+        }
+
         public DbSet<Address> Addresses { get; set; }
         //public DbSet<Address> Images { get; set; }
-        public DbSet<Address> Properties { get; set; }
-        public DbSet<Address> PropertyTypes { get; set; }
-        public DbSet<Address> Users { get; set; }
-        public DbSet<Address> UserTypes { get; set; }
+        public DbSet<Property> Properties { get; set; }
+        public DbSet<PropertyType> PropertyTypes { get; set; }
     }
 }

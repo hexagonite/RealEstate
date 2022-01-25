@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace RealEstate.API.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
-    public class HealthCheckController : ControllerBase
+    //[ApiExplorerSettings(IgnoreApi = true)]
+    public class ErrorController : ControllerBase
     {
         [HttpGet]
-        public string Get()
+        public IActionResult Error()
         {
-            return "Healthy";
+            throw new Exception("Test message");
         }
     }
 }

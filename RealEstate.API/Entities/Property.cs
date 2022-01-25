@@ -6,8 +6,10 @@ using System.Text;
 
 namespace RealEstate.API.Entities
 {
-    public class Property : BaseEntity
+    public class Property
     {
+        [Key]
+        public int Id { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
         public int RoomAmount { get; set; }

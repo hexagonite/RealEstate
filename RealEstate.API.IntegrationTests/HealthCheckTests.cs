@@ -8,12 +8,12 @@ using Xunit;
 
 namespace RealEstate.API.IntegrationTests
 {
-    public class UnitTest1
+    public class HealthCheckTests
     {
         private readonly TestServer _server;
         private readonly HttpClient _client;
 
-        public UnitTest1()
+        public HealthCheckTests()
         {
             _server = new TestServer(new WebHostBuilder()
                 .UseStartup<Startup>());

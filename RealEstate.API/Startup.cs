@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,8 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using RealEstate.API.Contexts;
-using RealEstate.API.Repositories.Abstractions;
-using RealEstate.API.Repositories.Implementations;
+using RealEstate.API.Middlewares;
+using RealEstate.API.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +21,6 @@ namespace RealEstate.API
 {
     public class Startup
     {
-        //TODOS
-        ///// add swagger
-        ///// podstawowe encje
-        // podstawowy controller do encji (GET i POST)
-        // testy
-        ///// entityframework
-        ///// baza danych
-        ///// propertyservice
-        // middleware przechwytuj¹cy exceptiony (custom error dto)
 
         public Startup(IConfiguration configuration)
         {
@@ -49,11 +41,12 @@ namespace RealEstate.API
                    new CamelCasePropertyNamesContractResolver();
             }).AddXmlDataContractSerializerFormatters();
 
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddSwaggerGen();
 
-            services.AddDbContextPool<RealEstateContext>(options =>
+            services.AddDbContextPool<IRealEstateContext, RealEstateContext>(options =>
             {
-                options.UseLazyLoadingProxies();
                 var connectionString = Configuration.GetConnectionString("RealEstateDb");
                 #if DEBUG
                     options.UseSqlServer(connectionString).EnableSensitiveDataLogging();
@@ -62,15 +55,7 @@ namespace RealEstate.API
                 #endif
             });
 
-            #region Repositories
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IAddressRepository, AddressRepository>();
-            //services.AddScoped<IImageRepository, ImageRepository>();
-            services.AddScoped<IPropertyRepository, PropertyRepository>();
-            services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserTypeRepository, UserTypeRepository>();
-            #endregion
+            services.AddScoped<IPropertyService, PropertyService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,19 +69,26 @@ namespace RealEstate.API
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                     options.RoutePrefix = string.Empty;
                 });
+                //app.UseExceptionHandler("/error");
                 app.UseDeveloperExceptionPage();
+            } else
+            {
+                app.UseExceptionHandler("/error");
             }
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
         }
+
     }
 }
