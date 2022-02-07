@@ -8,7 +8,6 @@ namespace RealEstate.API.DTOs
 {
     public abstract class PropertyForManipulationDto
     {
-        [Range(1, 100)]
         public decimal Price { get; set; }
         public string Description { get; set; }
         public int RoomAmount { get; set; }

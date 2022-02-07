@@ -11,13 +11,10 @@ namespace RealEstateAgency.Infrastructure.Configuration
     {
         public void Configure(EntityTypeBuilder<Property> builder)
         {
-            builder.Property(p => p.Price).HasColumnType("decimal(18, 2)");
-            builder.Property(p => p.Size).HasColumnType("decimal(18, 2)");
-
-            //builder.Property(p => p.Price)
-            //    .HasPrecision(18, 2);
-            //builder.Property(p => p.Size)
-            //    .HasPrecision(18, 2);
+            builder.Property(p => p.Price)
+                .HasPrecision(18, 2);
+            builder.Property(p => p.Size)
+                .HasPrecision(18, 2);
         }
     }
 }

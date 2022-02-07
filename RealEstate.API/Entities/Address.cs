@@ -15,6 +15,7 @@ namespace RealEstate.API.Entities
         public string PostalCode { get; set; }
         public string StateOrProvince { get; set; }
         public string City { get; set; }
+
         [ForeignKey("PropertyId")]
         public virtual Property Property { get; set; }
         public int PropertyId { get; set; }

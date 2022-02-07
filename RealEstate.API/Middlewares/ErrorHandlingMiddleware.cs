@@ -29,7 +29,7 @@ namespace RealEstate.API.Middlewares
                 // using static System.Net.Mime.MediaTypeNames;
                 context.Response.ContentType = Text.Plain;
 
-                await context.Response.WriteAsync("An exception was thrown.");
+                await context.Response.WriteAsync($"An exception was thrown: {ex.Message}");
             }
         }
     }

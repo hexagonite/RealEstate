@@ -10,8 +10,6 @@ namespace RealEstate.API.Services
     public interface IPropertyService
     {
         Task<PropertyDto> GetProperty(int propertyId);
-        Task<PropertyType> CheckIfPropertyTypeExists(string propertyTypeName);
-        Task<bool> CheckIfPropertyAddressIsUnique(AddressForCreationDto address);
-        Task<PropertyDto> CreateProperty(PropertyForCreationDto propertyForCreationDto, PropertyType propertyType);
+        Task<PropertyDto> CreateProperty(PropertyForCreationDto propertyForCreationDto);
     }
 }

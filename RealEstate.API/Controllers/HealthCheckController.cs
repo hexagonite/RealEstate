@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace RealEstate.API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class HealthCheckController : ControllerBase
+    [Produces("text/plain")]
+    public class HealthCheckController : BasicController
     {
         [HttpGet]
         public string Get()

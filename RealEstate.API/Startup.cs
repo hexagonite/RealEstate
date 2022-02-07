@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,30 +17,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace RealEstate.API
 {
     public class Startup
     {
-
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(setupAction =>
-            {
-                setupAction.ReturnHttpNotAcceptable = true;
-            }).AddNewtonsoftJson(setupAction =>
-            {
-                setupAction.SerializerSettings.ContractResolver =
-                   new CamelCasePropertyNamesContractResolver();
-            }).AddXmlDataContractSerializerFormatters();
+                {
+                    setupAction.ReturnHttpNotAcceptable = true;
+                })
+                .AddNewtonsoftJson(setupAction =>
+                {
+                    setupAction.SerializerSettings.ContractResolver =
+                        new CamelCasePropertyNamesContractResolver();
+                }).AddXmlDataContractSerializerFormatters()
+                .AddFluentValidation(c =>
+                    {
+                        c.RegisterValidatorsFromAssemblyContaining<Startup>();
+                        c.DisableDataAnnotationsValidation = false;
+                    }); ;
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -48,14 +56,22 @@ namespace RealEstate.API
             services.AddDbContextPool<IRealEstateContext, RealEstateContext>(options =>
             {
                 var connectionString = Configuration.GetConnectionString("RealEstateDb");
-                #if DEBUG
+                
+                if (_webHostEnvironment.IsDevelopment())
+                {
                     options.UseSqlServer(connectionString).EnableSensitiveDataLogging();
-                #else
+                }
+                else
+                {
                     options.UseSqlServer(connectionString);
-                #endif
+                }
+
             });
 
+            services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IPropertyService, PropertyService>();
+            services.AddScoped<IPropertyTypeService, PropertyTypeService>();
+            services.AddSingleton<IMemoryCache, MemoryCache>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,16 +85,14 @@ namespace RealEstate.API
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                     options.RoutePrefix = string.Empty;
                 });
-                //app.UseExceptionHandler("/error");
                 app.UseDeveloperExceptionPage();
-            } else
+            }
+            else
             {
-                app.UseExceptionHandler("/error");
+                app.UseMiddleware<ErrorHandlingMiddleware>();
             }
 
             app.UseHttpsRedirection();
-
-            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseRouting();
 

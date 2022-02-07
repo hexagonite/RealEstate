@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 namespace RealEstate.API.Controllers
 {
     [AllowAnonymous]
-    [ApiController]
-    [Route("api/[controller]")]
     //[ApiExplorerSettings(IgnoreApi = true)]
-    public class ErrorController : ControllerBase
+    public class ErrorController : BasicController
     {
         [HttpGet]
         public IActionResult Error()
         {
-            throw new Exception("Test message");
+            throw new Exception("Test error message");
         }
     }
 }

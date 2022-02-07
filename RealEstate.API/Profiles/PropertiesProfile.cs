@@ -13,8 +13,7 @@ namespace RealEstate.API.Profiles
         public PropertiesProfile()
         {
             CreateMap<Property, PropertyDto>()
-                .ForMember(dest => dest.PropertyType, opt => opt.MapFrom(src => src.PropertyType.Name))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address)); // is this necessary?
+                .ForMember(dest => dest.PropertyType, opt => opt.MapFrom(src => src.PropertyType.Name));
             CreateMap<PropertyForCreationDto, Property>()
                 .ForMember(dest => dest.PropertyType, opt => opt.Ignore());
             CreateMap<PropertyForUpdateDto, Property>();

@@ -1,19 +1,18 @@
+using System.Net.Http;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace RealEstate.API.IntegrationTests
+namespace RealEstate.API.IntegrationTests.Features
 {
-    public class HealthCheckTests
+    public class HealthCheckControllerTests
     {
         private readonly TestServer _server;
         private readonly HttpClient _client;
 
-        public HealthCheckTests()
+        public HealthCheckControllerTests()
         {
             _server = new TestServer(new WebHostBuilder()
                 .UseStartup<Startup>());
@@ -21,7 +20,7 @@ namespace RealEstate.API.IntegrationTests
         }
 
         [Fact]
-        public async Task Test1()
+        public async Task Get_ReturnsHealthy()
         {
             var response = await _client.GetAsync("api/healthcheck");
             var content = await response.Content.ReadAsStringAsync();
