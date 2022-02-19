@@ -12,11 +12,13 @@ namespace RealEstate.API.Services
 {
     public class PropertyService : IPropertyService
     {
+        private readonly IPropertyTypeService _propertyTypeService;
         private readonly IRealEstateContext _dbContext;
         private readonly IMapper _mapper;
 
-        public PropertyService(IRealEstateContext dbContext, IMapper mapper)
+        public PropertyService(IPropertyTypeService propertyTypeService, IRealEstateContext dbContext, IMapper mapper)
         {
+            _propertyTypeService = propertyTypeService;
             _dbContext = dbContext;
             _mapper = mapper;
         }
@@ -34,10 +36,10 @@ namespace RealEstate.API.Services
         public async Task<PropertyDto> CreateProperty(PropertyForCreationDto propertyForCreationDto)
         {
             var propertyEntity = _mapper.Map<Property>(propertyForCreationDto);
-            var propertyType = await _dbContext.PropertyTypes.FirstAsync(x => x.Name == propertyForCreationDto.PropertyType);
+            var propertyType = await _propertyTypeService.GetPropertyType(propertyForCreationDto.PropertyType);
             propertyEntity.PropertyType = propertyType;
             propertyEntity.UploadedAt = DateTime.UtcNow;
-            
+
             _dbContext.Properties.Add(propertyEntity);
 
             await _dbContext.SaveChangesAsync();

@@ -7,16 +7,16 @@ namespace RealEstate.API.Services
 {
     public class AddressService : IAddressService
     {
-        private readonly IRealEstateContext _realEstateContext;
+        private readonly IRealEstateContext _dbContext;
 
-        public AddressService(IRealEstateContext realEstateContext)
+        public AddressService(IRealEstateContext dbContext)
         {
-            _realEstateContext = realEstateContext;
+            _dbContext = dbContext;
         }
 
         public async Task<bool> IsAddressUnique(AddressForManipulationDto addressDto)
         {
-            return await _realEstateContext.Addresses.AnyAsync(a => 
+            return await _dbContext.Addresses.AnyAsync(a => 
                 a.AddressLine1 == addressDto.AddressLine1 && 
                 a.AddressLine2 == addressDto.AddressLine2 && 
                 a.PostalCode == addressDto.PostalCode && 

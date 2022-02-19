@@ -9,5 +9,6 @@ namespace RealEstate.API.Services
     {
         Task<IEnumerable<PropertyTypeDto>> GetAllPropertyTypes();
         Task<bool> PropertyTypeExists(string propertyTypeName);
+        Task<PropertyType> GetPropertyType(string propertyTypeName);
     }
 }

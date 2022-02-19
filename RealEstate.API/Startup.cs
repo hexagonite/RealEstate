@@ -71,6 +71,7 @@ namespace RealEstate.API
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<IPropertyTypeService, PropertyTypeService>();
+            services.AddScoped<IPropertyStatisticsService, PropertyStatisticsService>();
             services.AddSingleton<IMemoryCache, MemoryCache>();
         }
 

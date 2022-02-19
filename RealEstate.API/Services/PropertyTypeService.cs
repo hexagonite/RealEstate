@@ -40,6 +40,12 @@ namespace RealEstate.API.Services
             return propertyTypes.Any(x => x.Name == propertyTypeName);
         }
 
+        public async Task<PropertyType> GetPropertyType(string propertyTypeName)
+        {
+            var propertyTypes = await GetPropertyTypeCache();
+            return propertyTypes.FirstOrDefault(x => x.Name == propertyTypeName);
+        }
+
         private async Task<IEnumerable<PropertyType>> GetPropertyTypeCache()
         {
             if (!_memoryCache.TryGetValue(PropertyTypeCacheKey, out IEnumerable<PropertyType> cachedPropertyTypes))
