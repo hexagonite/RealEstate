@@ -37,7 +37,7 @@ namespace RealEstate.API.Services
         {
             var propertyEntity = _mapper.Map<Property>(propertyForCreationDto);
             var propertyType = await _propertyTypeService.GetPropertyType(propertyForCreationDto.PropertyType);
-            propertyEntity.PropertyType = propertyType;
+            propertyEntity.PropertyTypeId = propertyType.Id;
             propertyEntity.UploadedAt = DateTime.UtcNow;
 
             _dbContext.Properties.Add(propertyEntity);
